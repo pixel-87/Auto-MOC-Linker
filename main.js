@@ -50,6 +50,13 @@ class AutoMOCLinkerPlugin extends Plugin {
         await this.saveData(this.settings);
     }
 
+    // Helper function to ensure .md extension
+    ensureMdExtension(path) {
+        if (!path) return path;
+        if (path.toLowerCase().endsWith('.md')) return path;
+        return path + '.md';
+    }
+
     async runAutoIndex() {
         const { vault } = this.app;
         const searchPath = this.settings.defaultPath || '/';
@@ -134,24 +141,30 @@ class AutoMOCLinkerPlugin extends Plugin {
             if (!mapping.mocPath) continue;
             
             try {
-                const mocFile = this.app.vault.getAbstractFileByPath(mapping.mocPath);
-                if (!mocFile) continue;
+                // Ensure the MOC path has .md extension
+                const mocPath = this.ensureMdExtension(mapping.mocPath);
+                
+                const mocFile = this.app.vault.getAbstractFileByPath(mocPath);
+                if (!mocFile) {
+                    console.log(`MOC file not found at: ${mocPath}`);
+                    continue;
+                }
                 
                 // Lazy load MOC links
-                if (!this.mocLinksCache[mapping.mocPath]) {
+                if (!this.mocLinksCache[mocPath]) {
                     try {
                         const mocContent = await vault.read(mocFile);
-                        this.mocLinksCache[mapping.mocPath] = {
+                        this.mocLinksCache[mocPath] = {
                             content: mocContent,
                             links: this.extractExistingLinks(mocContent)
                         };
                     } catch (e) {
-                        console.error(`Failed to read MOC at ${mapping.mocPath}`, e);
+                        console.error(`Failed to read MOC at ${mocPath}`, e);
                         continue;
                     }
                 }
                 
-                const mocData = this.mocLinksCache[mapping.mocPath];
+                const mocData = this.mocLinksCache[mocPath];
                 const links = mocData.links;
                 const fileName = file.basename;
                 
@@ -164,7 +177,7 @@ class AutoMOCLinkerPlugin extends Plugin {
                 const updatedContent = this.addLinkToMOC(mocData.content, newLink, sectionHeading);
                 
                 // Log before modification for debugging
-                console.log(`Adding link to ${fileName} in ${mapping.mocPath}`);
+                console.log(`Adding link to ${fileName} in ${mocPath}`);
                 
                 await vault.modify(mocFile, updatedContent);
                 
@@ -172,10 +185,10 @@ class AutoMOCLinkerPlugin extends Plugin {
                 this.totalNotesAdded++;
                 
                 // Log after modification for debugging
-                console.log(`Added link to ${fileName} in ${mapping.mocPath} - total: ${this.totalNotesAdded}`);
+                console.log(`Added link to ${fileName} in ${mocPath} - total: ${this.totalNotesAdded}`);
                 
                 // Update the cache
-                this.mocLinksCache[mapping.mocPath] = {
+                this.mocLinksCache[mocPath] = {
                     content: updatedContent,
                     links: [...links, fileName]
                 };
@@ -383,9 +396,10 @@ class AutoMOCLinkerSettingTab extends PluginSettingTab {
                         await this.plugin.saveSettings();
                     }))
                 .addText(text => text
-                    .setPlaceholder('MOC path (e.g., MOCs/Mathematics.md)')
-                    .setValue(mapping.mocPath)
+                    .setPlaceholder('MOC path (without .md extension)')
+                    .setValue(mapping.mocPath ? mapping.mocPath.replace(/\.md$/i, '') : '')
                     .onChange(async (value) => {
+                        // Store the path without enforcing .md extension
                         this.plugin.settings.tagMappings[i].mocPath = value;
                         await this.plugin.saveSettings();
                     }))
