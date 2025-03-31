@@ -13,3 +13,6 @@ This plugin is in development. Although it only modifies MOC files, it is always
 - Add the path to the MOC note, without .md extension.
 - In the MOC note, create a heading for the links to be added under. Defaults to ## Links but can be changed in the settings under Section Heading.
 - Run the command Auto MOC Linker.
+
+## Issues:
+The MOC links to itself, need to exclude itself.
