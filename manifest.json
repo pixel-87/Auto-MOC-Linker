@@ -1,0 +1,10 @@
+{
+  "id": "auto-moc-linker",
+  "name": "Auto MOC Linker",
+  "version": "1.0.0",
+  "minAppVersion": "0.12.0",
+  "description": "Automatically add notes to MOCs based on tags",
+  "author": "pixel-87",
+  "authorUrl": "https://github.com/pixel-87",
+  "isDesktopOnly": false
+}

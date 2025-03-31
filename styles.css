@@ -1,0 +1,66 @@
+/* Make sure plugin is visible in Community Plugins list */
+.plugin-name[data-plugin-id="auto-moc-linker"] {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    opacity: 1 !important;
+  }
+  
+  /* Make settings icon visible */
+  .plugin-controls[data-plugin-id="auto-moc-linker"] {
+    opacity: 1 !important;
+  }
+  
+  /* Settings styles */
+  .moc-mapping-header {
+    margin-top: 24px;
+    margin-bottom: 12px;
+    font-size: 1.3em;
+    font-weight: 600;
+  }
+  
+  .moc-mappings-container {
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 4px;
+    padding: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .moc-mapping-item {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+    border-bottom: 1px dashed var(--background-modifier-border);
+  }
+  
+  .moc-mapping-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+  
+  .moc-mapping-setting .setting-item-control {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: flex-end;
+  }
+  
+  .moc-mapping-setting input {
+    min-width: 180px;
+  }
+  
+  .moc-remove-button {
+    color: var(--text-error);
+  }
+  
+  .moc-add-mapping-button {
+    margin-top: 16px;
+  }
+  
+  /* Make sure all text in settings is clearly visible */
+  .auto-moc-linker-settings .setting-item-name,
+  .auto-moc-linker-settings .setting-item-description,
+  .auto-moc-linker-settings input,
+  .auto-moc-linker-settings button {
+    font-size: 16px !important;
+    opacity: 1 !important;
+  }
